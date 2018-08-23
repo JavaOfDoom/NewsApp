@@ -6,7 +6,7 @@ public class News {
 
     private String articleAuthor;
 
-    private long publishedTimeInMilliseconds;
+    private String publishedDate;
 
     private String articleSection;
 
@@ -14,13 +14,13 @@ public class News {
 
     private String articleUrl;
 
-    public News(String title, String author, long timeInMilliseconds, String section, String synopsis, String url) {
+    public News(String title, String author, String date, String section, String synopsis, String webUrl) {
         articleTitle = title;
         articleAuthor = author;
-        publishedTimeInMilliseconds = timeInMilliseconds;
+        publishedDate = date;
         articleSection = section;
         articleSynopsis = synopsis;
-        articleUrl = url;
+        articleUrl = webUrl;
     }
 
     public String getArticleTitle() {
@@ -31,8 +31,8 @@ public class News {
         return articleAuthor;
     }
 
-    public long getPublishedTimeInMilliseconds() {
-        return publishedTimeInMilliseconds;
+    public String getPublishedDate() {
+        return publishedDate;
     }
 
     public String getArticleSection() {

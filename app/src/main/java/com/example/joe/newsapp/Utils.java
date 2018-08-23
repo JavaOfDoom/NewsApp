@@ -3,6 +3,8 @@ package com.example.joe.newsapp;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -105,17 +107,36 @@ public final class Utils {
         try {
             JSONObject baseJsonResponse = new JSONObject(newsJSON);
             JSONObject newsObject = baseJsonResponse.getJSONObject("response");
+            JSONArray newsArray = newsObject.getJSONArray("results");
 
-            for (int i = 0; i < newsObject.length(); i++) {
+            for (int i = 0; i < newsArray.length(); i++) {
                 JSONObject currentNews = newsArray.getJSONObject(i);
-                JSONObject results = currentNews.getJSONObject("results");
-                String title = results.getString("webTitle");
-                long publicationDate = results.getLong("webPublicationDate");
-                String section = results.getString("sectionName");
-                String webUrl = results.getString("webUrl");
-                J
+                String title = currentNews.getString("webTitle");
+                String date = currentNews.getString("webPublicationDate");
+                String section = currentNews.getString("sectionName");
+                String webUrl = currentNews.getString("webUrl");
+                JSONArray tagsArray = currentNews.getJSONArray("tags");
+                String author = null;
+                if (tagsArray.length() == 1) {
+                    JSONObject contributorTag = (JSONObject) tagsArray.get(0);
+                    author = contributorTag.getString("webTitle");
+                }
 
+                JSONObject blocks = currentNews.getJSONObject("blocks");
+                JSONArray bodyArray = blocks.getJSONArray("body");
+                String synopsis = null;
+                if (bodyArray.length() == 1) {
+                    JSONObject body = (JSONObject) bodyArray.get(0);
+                    synopsis = body.getString("bodyTextSummary");
+                }
+
+                News newsInfo = new News(title, author, date, section, synopsis, webUrl);
+                news.add(newsInfo);
             }
+        } catch (JSONException e) {
+            Log.e("Utils", "Problem parsing the news JSON results", e);
         }
+
+        return news;
     }
 }
